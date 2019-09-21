@@ -21,8 +21,9 @@ useWebsocket = False
 clientId = 'server'
 topic = 'pub'
 mess='UzC'
-#mode='subscribe'
+# mode='subscribe'
 mode='publish'
+# mode='both'
 
 # Configure logging
 logger = logging.getLogger("AWSIoTPythonSDK.core")
@@ -52,20 +53,20 @@ myAWSIoTMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
 
 # Connect and subscribe to AWS IoT
 myAWSIoTMQTTClient.connect()
-if mode=='subscribe':
+if mode=='subscribe' or mode=='both':
 	myAWSIoTMQTTClient.subscribe(topic, 1, customCallback)
 time.sleep(2)
 
 # Publish to the same topic in a loop forever
 loopCount = 0
 while True:
-    if mode=='publish':
+    if mode=='publish' or mode=='both':
         message = {}
         message['message'] = mess
         message['sequence'] = loopCount
         messageJson = json.dumps(message)
         myAWSIoTMQTTClient.publish(topic, messageJson, 1)
-        if mode == 'publish':
+        if mode == 'publish' or mode=='both':
             print('Published topic %s: %s\n' % (topic, messageJson))
         loopCount += 1
     time.sleep(1)
