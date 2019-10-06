@@ -4,12 +4,18 @@ import time
 import argparse
 import json
 
+rec=[]
+
 def customCallback(client, userdata, message):
+    global rec
     print("Received a new message: ")
     print(message.payload)
     print("from topic: ")
     print(message.topic)
     print("--------------\n\n")
+    rec=json.loads(message.payload)
+    print('***************************')
+    print(type(rec),rec)
 	
 host = 'a1wlltnsvntckz-ats.iot.ap-south-1.amazonaws.com'
 rootCAPath = 'root-CA.pem'
@@ -18,9 +24,9 @@ privateKeyPath = '1e5e1bc664-private.pem.key'
 port = 8883 # When no port override for non-WebSocket, default to 8883
 #port = 443 # When no port override for WebSocket, default to 443
 useWebsocket = False
-clientId = 'chargebuddy'
-topic = 'pub'
-mess='UzC'
+clientId = 'dev1'
+topic = 'dev1'
+mess='from_dev1'
 # mode='subscribe'
 # mode='publish'
 mode='both'
@@ -68,7 +74,7 @@ while loopCount<2:
         message['message'] = mess
         message['sequence'] = loopCount
         messageJson = json.dumps(message)
-        myAWSIoTMQTTClient.publish(topic, messageJson, 1)
+        myAWSIoTMQTTClient.publish('server', messageJson, 1)
         if mode == 'publish' or mode=='both':
             print('Published topic %s: %s\n' % (topic, messageJson))
         loopCount += 1
