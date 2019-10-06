@@ -45,9 +45,9 @@ else:
     myAWSIoTMQTTClient.configureCredentials(rootCAPath, privateKeyPath, certificatePath)
 	
 # AWSIoTMQTTClient connection configuration
-myAWSIoTMQTTClient.configureAutoReconnectBackoffTime(1, 32, 20)
+myAWSIoTMQTTClient.configureAutoReconnectBackoffTime(1, 1, 2)
 myAWSIoTMQTTClient.configureOfflinePublishQueueing(-1)  # Infinite offline Publish queueing
-myAWSIoTMQTTClient.configureDrainingFrequency(2)  # Draining: 2 Hz
+myAWSIoTMQTTClient.configureDrainingFrequency(5)  # Draining: 2 Hz
 myAWSIoTMQTTClient.configureConnectDisconnectTimeout(10)  # 10 sec
 myAWSIoTMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
 
@@ -55,12 +55,14 @@ myAWSIoTMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
 myAWSIoTMQTTClient.connect()
 
 if mode=='subscribe' or mode=='both':
-	myAWSIoTMQTTClient.subscribe(topic, 1, customCallback)
+	print('----------------------------------------------------')
+	print(myAWSIoTMQTTClient.subscribe(topic, 1, customCallback))
+	print('----------------------------------------------------')
 time.sleep(2)
 
 # Publish to the same topic in a loop forever
 loopCount = 0
-while True:
+while loopCount<2:
     if mode=='publish' or mode=='both':
         message = {}
         message['message'] = mess
@@ -72,3 +74,5 @@ while True:
         loopCount += 1
     time.sleep(1)
 
+while True:
+	pass
