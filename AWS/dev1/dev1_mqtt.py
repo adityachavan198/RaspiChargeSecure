@@ -27,9 +27,9 @@ useWebsocket = False
 clientId = 'dev1'
 topic = 'dev1'
 mess='from_dev1'
-# mode='subscribe'
+mode='subscribe'
 # mode='publish'
-mode='both'
+#mode='both'
 
 # Configure logging
 logger = logging.getLogger("AWSIoTPythonSDK.core")
