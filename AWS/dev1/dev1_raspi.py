@@ -16,25 +16,21 @@ GPIO.setup(4, GPIO.OUT)
 '''
 
 def open_locker(slot):
-    print("Unlocked")
+    print(slot,"Unlocked")
 
 def close_locker(slot):
-    print("Locked")
+    print(slot,"Locked")
 
 def customCallback(client, userdata, message):
-    # instruction = json.loads(message.payload)
-    instruction = message
+    instruction = json.loads(message.payload)
     action = instruction['action']
     slot = instruction['slot']
-
     if action == "open":
         open_locker(slot)
     elif action == "close":
         close_locker(slot)
     else:
         pass
-	
-'''   #remove when connected to internet
 
 host = 'a1wlltnsvntckz-ats.iot.ap-south-1.amazonaws.com'
 rootCAPath = 'root-CA.pem'
@@ -75,7 +71,7 @@ myAWSIoTMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
 # Connect and subscribe to AWS IoT
 myAWSIoTMQTTClient.connect()
 myAWSIoTMQTTClient.subscribe(topic, 1, customCallback)
-'''
+
 
 def publish_to_server():
 
@@ -83,15 +79,15 @@ def publish_to_server():
     message = {}
     message['message'] = "No Message yet"
     messageJson = json.dumps(message)
-#remove when connected to internet        #    myAWSIoTMQTTClient.publish('server', messageJson, 1)
+    myAWSIoTMQTTClient.publish('server', messageJson, 1)
     print('Published topic %s: %s\n' % ('server', messageJson))
     time.sleep(1)
     return True
 
-# Remove After testing
-#  while True:
-# 	pass
-mess_load = {"message": "from_server", "slot": 3, "error": False, "station_number": "1", "action": "Status"}
+while True:
+	pass
 
-customCallback(True,True,mess_load)
+# mess_load = {"message": "from_server", "slot": 3, "error": False, "station_number": "1", "action": "open"}
+
+# customCallback(True,True,mess_load)
 
