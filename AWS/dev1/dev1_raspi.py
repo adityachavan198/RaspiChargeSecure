@@ -4,32 +4,47 @@ import time
 import argparse
 import json
 
-rec=[]
+'''
+#Remove When uploaded in raspi
+import RPi.GPIO as GPIO
+GPIO.setmode(GPIO.BCM)
+
+#Setup Lock pin
+GPIO.setup(2, GPIO.OUT)
+GPIO.setup(3, GPIO.OUT)
+GPIO.setup(4, GPIO.OUT)
+'''
+
+def open_locker(slot):
+    print("Unlocked")
+
+def close_locker(slot):
+    print("Locked")
 
 def customCallback(client, userdata, message):
-    global rec
-    print("Received a new message: ")
-    print(message.payload)
-    print("from topic: ")
-    print(message.topic)
-    print("--------------\n\n")
-    rec=json.loads(message.payload)
-    print('***************************')
-    print(type(rec),rec)
+    # instruction = json.loads(message.payload)
+    instruction = message
+    action = instruction['action']
+    slot = instruction['slot']
+
+    if action == "open":
+        open_locker(slot)
+    elif action == "close":
+        close_locker(slot)
+    else:
+        pass
 	
+'''   #remove when connected to internet
+
 host = 'a1wlltnsvntckz-ats.iot.ap-south-1.amazonaws.com'
 rootCAPath = 'root-CA.pem'
 certificatePath = '1e5e1bc664-certificate.pem.crt'
 privateKeyPath = '1e5e1bc664-private.pem.key'
 port = 8883 # When no port override for non-WebSocket, default to 8883
-#port = 443 # When no port override for WebSocket, default to 443
 useWebsocket = False
 clientId = 'dev1'
 topic = 'dev1'
 mess='from_dev1'
-# mode='subscribe'
-# mode='publish'
-mode='both'
 
 # Configure logging
 logger = logging.getLogger("AWSIoTPythonSDK.core")
@@ -59,26 +74,24 @@ myAWSIoTMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
 
 # Connect and subscribe to AWS IoT
 myAWSIoTMQTTClient.connect()
+myAWSIoTMQTTClient.subscribe(topic, 1, customCallback)
+'''
 
-if mode=='subscribe' or mode=='both':
-	print('----------------------------------------------------')
-	print(myAWSIoTMQTTClient.subscribe(topic, 1, customCallback))
-	print('----------------------------------------------------')
-time.sleep(2)
+def publish_to_server():
 
-# Publish to the same topic in a loop forever
-loopCount = 0
-while loopCount<2:
-    if mode=='publish' or mode=='both':
-        message = {}
-        message['message'] = mess
-        message['sequence'] = loopCount
-        messageJson = json.dumps(message)
-        myAWSIoTMQTTClient.publish('server', messageJson, 1)
-        if mode == 'publish' or mode=='both':
-            print('Published topic %s: %s\n' % (topic, messageJson))
-        loopCount += 1
+#    status = get_status()
+    message = {}
+    message['message'] = "No Message yet"
+    messageJson = json.dumps(message)
+#remove when connected to internet        #    myAWSIoTMQTTClient.publish('server', messageJson, 1)
+    print('Published topic %s: %s\n' % ('server', messageJson))
     time.sleep(1)
+    return True
 
-while True:
-	pass
+# Remove After testing
+#  while True:
+# 	pass
+mess_load = {"message": "from_server", "slot": 3, "error": False, "station_number": "1", "action": "Status"}
+
+customCallback(True,True,mess_load)
+
