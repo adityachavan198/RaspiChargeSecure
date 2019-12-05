@@ -27,13 +27,13 @@ def close_locker(slot):
 
 def customCallback(client, userdata, message):
     instruction = json.loads(message.payload)
-    action = instruction['action']
-    slot = instruction['slot']
     if instruction['error']:
         print('XXXXXXXXXXXXXXXXXXXXX')
         print(instruction['error_desc'])
         print('XXXXXXXXXXXXXXXXXXXXX')
     else:
+        action = instruction['action']
+        slot = instruction['slot']
         if action == "open":
             open_locker(slot)
         elif action == "close":
