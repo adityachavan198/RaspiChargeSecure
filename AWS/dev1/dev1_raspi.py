@@ -16,21 +16,28 @@ GPIO.setup(4, GPIO.OUT)
 '''
 
 def open_locker(slot):
+    print('XXXXXXXXXXXXXXXXXXXXX')
     print(slot,"Unlocked")
+    print('XXXXXXXXXXXXXXXXXXXXX')
 
 def close_locker(slot):
+    print('XXXXXXXXXXXXXXXXXXXXX')
     print(slot,"Locked")
+    print('XXXXXXXXXXXXXXXXXXXXX')
 
 def customCallback(client, userdata, message):
     instruction = json.loads(message.payload)
     action = instruction['action']
     slot = instruction['slot']
-    if action == "open":
-        open_locker(slot)
-    elif action == "close":
-        close_locker(slot)
+    if instruction['error']:
+        print('XXXXXXXXXXXXXXXXXXXXX')
+        print(instruction['error_desc'])
+        print('XXXXXXXXXXXXXXXXXXXXX')
     else:
-        pass
+        if action == "open":
+            open_locker(slot)
+        elif action == "close":
+            close_locker(slot)
 
 host = 'a1wlltnsvntckz-ats.iot.ap-south-1.amazonaws.com'
 rootCAPath = 'root-CA.pem'
