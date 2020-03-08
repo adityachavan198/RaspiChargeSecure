@@ -4,7 +4,7 @@ import time
 import argparse
 import json
 
-'''
+
 #Remove When uploaded in raspi
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
@@ -24,25 +24,34 @@ GPIO.setup(21, GPIO.OUT)
 lockers = {0:{"green_light":17,"red_light":27,"pin":22}, 1:{"green_light":5,"red_light":6,"pin":13}, 2:{"green_light":16,"red_light":20,"pin":21}}
 
 def change_led(slot,phone_status):
+    green_pin = lockers[slot]['green_light']
+    red_pin = lockers[slot]['red_light']
     if phone_status == 'outside':
-        GPIO.output(lockers[slot]['green_light'],True)
-    else phone_status == 'inside':
-        GPIO.output(lockers[slot]['red_light'],True)
-'''
+        GPIO.output(green_pin,True)
+        GPIO.output(red_pin,False)
+        print("Green LED = ",green_pin)
+    elif phone_status == 'inside':     
+        GPIO.output(red_pin,True)
+        GPIO.output(green_pin,False)
+        print("Red LED = ",red_pin)
 
 def open_locker(slot):
     print('XXXXXXXXXXXXXXXXXXXXX')
     #Remove When uploaded in raspi
-    # GPIO.output(lockers[slot]['pin'], True)
-    print(slot,"Unlocked")
+    loc = lockers[slot]['pin']
+    GPIO.output(loc, False)
+    #GPIO.output(17, False)
+    print("Unlocked = ",loc)
     print('XXXXXXXXXXXXXXXXXXXXX')
 
 def close_locker(slot):
     print('XXXXXXXXXXXXXXXXXXXXX')
     #Remove When uploaded in raspi
-    # GPIO.output(lockers[slot]['pin'], True)
-    print(slot,"Locked")
-    print('XXXXXXXXXXXXXXXXXXXXX')
+    loc = lockers[slot]['pin']
+    GPIO.output(loc, True)
+    #GPIO.output(17, True)
+    print("Locked = ",loc)
+    print('XXXXXXXXXXXXXXXXXXXX')
 
 def customCallback(client, userdata, message):
     instruction = json.loads(message.payload)
@@ -112,8 +121,10 @@ def publish_to_server():
     time.sleep(1)
     return True
 
+print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 while True:
-	pass
+    pass
+        
 
 # mess_load = {"message": "from_server", "slot": 3, "error": False, "station_number": "1", "action": "open"}
 
